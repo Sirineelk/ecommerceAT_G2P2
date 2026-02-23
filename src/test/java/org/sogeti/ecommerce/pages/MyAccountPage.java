@@ -20,7 +20,7 @@ public class MyAccountPage extends BasePage {
 
     // Champ password
     @FindBy(xpath = "//input[@id='password']")
-    private WebElement passwordField;
+    private static WebElement passwordField;
 
     //champ click sur bouton login
     @FindBy(xpath = "//form[@class='login']//input[@name='login']")
@@ -43,6 +43,9 @@ public class MyAccountPage extends BasePage {
     @FindBy(xpath = "//a[text()='Logout']")
     private WebElement logoutLink;
 
+    @FindBy(xpath = "//a[contains(@href,'edit-account')]")
+    private WebElement accountDetailsLink;
+
 
     public void open(String url) {
         driver.get(url);
@@ -55,7 +58,7 @@ public class MyAccountPage extends BasePage {
         usernameField.sendKeys(username);
     }
 
-    public void enterPassword(String password){
+    public static void enterPassword(String password){
         passwordField.sendKeys(password);
     }
 
@@ -108,5 +111,11 @@ public class MyAccountPage extends BasePage {
 
     public boolean areCredentialsPreFilled() {
         return false;
+    }
+
+    public void clickAccountDetails() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(accountDetailsLink));
+        accountDetailsLink.click();
     }
 }
