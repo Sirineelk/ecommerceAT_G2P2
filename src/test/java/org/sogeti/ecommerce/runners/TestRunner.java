@@ -14,10 +14,7 @@ import org.sogeti.ecommerce.configuration.Hooks;
                 "org.sogeti.ecommerce.utils",
                 "org.sogeti.ecommerce.configuration"
         },
-        plugin = { "pretty", "html:target/cucumber-reports.html","json:target/cucumber.json" },
-        monochrome = true,
-        tags = "@ProceedToCheckout" //pour rajouter plusieurs tags il faut mettre un or entre eux
-
+        plugin = { "pretty", "html:target/cucumber-reports.html","json:target/cucumber.json" }
 )
 public class TestRunner extends Hooks {
 }
