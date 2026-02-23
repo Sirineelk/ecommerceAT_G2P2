@@ -74,4 +74,6 @@ public class ProductSteps {
         productPage.clickViewBasket();
     }
 
+
+
 }
