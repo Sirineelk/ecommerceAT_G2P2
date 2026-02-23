@@ -85,5 +85,10 @@ public class MyAccountSteps {
     public void checkCredentialsPreFilled() {
         Assert.assertTrue(myAccountPage.areCredentialsPreFilled());
     }
+    @When("je clique sur le lien Account Details")
+    public void clickOnAccountDetails() {
+        myAccountPage.clickAccountDetails();
+    }
+
 
 }

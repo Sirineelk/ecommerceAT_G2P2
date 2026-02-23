@@ -3,15 +3,15 @@ Feature: Connexion à l’espace My Account
   @ConnexionReussie
   Scenario: Connexion réussie avec login et mot de passe valides
     Given je suis sur la page My Account
-    When Je saisis un login "Teststartest@gmail.com"
-    And Je saisis mon mot de passe "Adminadmin1234."
+    When Je saisis un login "teststartestadmin@gmail.com"
+    And Je saisis mon mot de passe "Adminadmin123."
     And Je clique sur le bouton login
     Then je suis connecté et je vois le lien : DashboardOrders, Download, Adresses, Account Details, Logout
 
 @ConnexionMdpEchoue
 Scenario: Connexion échouée avec un mot de passe incorrect
     Given je suis sur la page My Account
-    When Je saisis un login "Teststartest@gmail.com"
+    When Je saisis un login "teststartestadmin@gmail.com"
     And Je saisis mon mot de passe "WrongPassword."
     And Je clique sur le bouton login
     Then Je ne suis pas connecté et je vois un message d'erreur indiquant que les identifiants sont incorrects
@@ -21,7 +21,7 @@ Scenario: Connexion échouée avec un mot de passe incorrect
   Scenario: Connexion echouée avec un login incorrect
     Given je suis sur la page My Account
     When Je saisis un login "vcxvvx"
-    And Je saisis mon mot de passe "Adminadmin1234."
+    And Je saisis mon mot de passe "Adminadmin123."
     And Je clique sur le bouton login
     Then Je ne suis pas connecté et je vois un message d'erreur indiquant que "wrong@example.com" est incorrect
 
@@ -36,8 +36,8 @@ Scenario: Connexion échouée avec un mot de passe incorrect
   @RememberMe
   Scenario: Remember Me
     Given je suis sur la page My Account
-    When Je saisis un login "Teststartest@gmail.com"
-    And Je saisis mon mot de passe "Adminadmin1234."
+    When Je saisis un login "teststartestadmin@gmail.com"
+    And Je saisis mon mot de passe "Adminadmin123."
     And je coche Remember ME
     And Je clique sur le bouton login
     And je suis connecté et je vois le lien : DashboardOrders, Download, Adresses, Account Details, Logout
