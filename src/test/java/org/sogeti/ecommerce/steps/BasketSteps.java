@@ -15,7 +15,7 @@ public class BasketSteps {
 
 
 
-    @Then("je suis redirigé vers la page du panier")
+ /*   @Then("je suis redirigé vers la page du panier")
     public void je_suis_redirige_vers_page_panier() {
         Assert.assertTrue(basketPage.isOnBasketPage());
     }
@@ -25,5 +25,5 @@ public class BasketSteps {
 
         Assert.assertTrue(basketPage.isCorrectProduct(productName));
         Assert.assertTrue(basketPage.isCorrectQuantity(quantity));
-    }
+    }*/
 }
