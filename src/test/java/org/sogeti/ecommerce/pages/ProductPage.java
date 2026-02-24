@@ -1,116 +1,37 @@
 package org.sogeti.ecommerce.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.sogeti.ecommerce.configuration.DriverFactory;
+import org.sogeti.ecommerce.configuration.Hooks;
 
-public class ProductPage extends BasePage {
+public class ProductPage {
 
-    public ProductPage(WebDriver driver) {
-        super(driver);
+    DriverFactory driver = new DriverFactory();
+    public ProductPage() {
+        PageFactory.initElements(Hooks.driver, this);
     }
 
-    public boolean isOnProductPage(String articleName) {
-        String slug = articleName.toLowerCase().replace(" ", "-");
-        return driver.getCurrentUrl().equals(
-                "https://practice.automationtesting.in/product/" + slug + "/"
-        );
+    @FindBy(xpath = "//button[contains(.,'Consent')] | //button[contains(.,'AGREE')]")
+    public WebElement btnConsent;
 
-    }
+    @FindBy(xpath = "//img[contains(@class,'attachment-shop_single')]")
+    public WebElement imageProduit;
 
-    // ========================
-    // ELEMENTS
-    // ========================
+    @FindBy(xpath = "//p[@class='price']")
+    public WebElement prixProduit;
 
-    // Photographie
-    @FindBy(xpath = "//div[@class='images']//img")
-    private WebElement productImage;
+    @FindBy(name = "quantity")
+    public WebElement champQuantite;
 
-    // Description
-    @FindBy(xpath = "//div[@itemprop='description']")
-    private WebElement productDescription;
+    @FindBy(xpath = "//button[@type='submit' and contains(@class,'single_add_to_cart_button')]")
+    public WebElement btnAjouterPanier;
 
-    // Prix
-    @FindBy(xpath = "//ins//span[@class='woocommerce-Price-amount amount']")
-    private WebElement productPrice;
+    @FindBy(xpath = "//div[@class='woocommerce-message']")
+    public WebElement messageConfirmation;
 
-    // Stock (nombre d'exemplaires disponibles)
-    @FindBy(xpath = "//p[@class='stock in-stock']")
-    private WebElement productStock;
-
-
-    // Champ quantité
-    @FindBy(xpath = "//div[@class='quantity']//input[@type='number']")
-    private WebElement quantityInput;
-
-    // Bouton Add to basket
-    @FindBy(xpath = "//button[contains(@class,'single_add_to_cart_button')]")
-    private WebElement addToBasketButton;
-
-    // Message de confirmation
-    @FindBy(xpath = "//div[contains(@class,'woocommerce-message')]")
-    private WebElement successMessage;
-
-    // Bouton View Basket
-    @FindBy(xpath = "//a[contains(@class,'wc-forward')]")
-    private WebElement viewBasketButton;
-
-
-
-    // ========================
-    // METHODS
-    // ========================
-
-    public boolean isProductImageDisplayed() {
-        handleCookieConsent();
-        return productImage.isDisplayed();
-    }
-
-    public boolean isProductDescriptionDisplayed() {
-        return productDescription.isDisplayed();
-    }
-
-    public boolean isProductPriceDisplayed() {
-        return productPrice.isDisplayed();
-    }
-
-    public boolean isProductStockDisplayed() {
-        return productStock.isDisplayed();
-    }
-
-
-    // RG2 - Saisir quantité
-    public void setQuantity(String quantity) {
-
-        WebElement qty = driver.findElement(By.xpath("//input[@name='quantity']"));
-
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].value='" + quantity + "';", qty);
-    }
-
-    // RG2 - Cliquer sur Add to basket
-    public void clickAddToBasket() {
-        addToBasketButton.click();
-    }
-
-    // RG3 - Vérifier message dynamique
-    public boolean isProductAddedMessageCorrect(String quantity, String productName) {
-
-        String messageText = successMessage.getText();
-
-        if (Integer.parseInt(quantity) > 1) {
-            return messageText.contains(quantity + " ×")
-                    && messageText.contains(productName)
-                    && messageText.contains("have been added to your basket");
-        } else {
-            return messageText.contains(productName)
-                    && messageText.contains("has been added to your basket");
-        }
-    }
-
-    public void clickViewBasket() {
-        viewBasketButton.click();
-    }
-}
+    // On cible le titre H2 car le contenu du div 'tab-description' est parfois masqué techniquement
+    @FindBy(xpath = "//h2[contains(text(),'Description')]")
+    public WebElement titreDescription;
+}}

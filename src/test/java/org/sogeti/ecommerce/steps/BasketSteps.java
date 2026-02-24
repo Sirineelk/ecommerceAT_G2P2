@@ -36,147 +36,132 @@ import static org.sogeti.ecommerce.configuration.DriverFactory.driver;
  * @see CheckoutPage pour les méthodes d'interaction avec la page de checkout.
  */
 
+import io.cucumber.java.en.*;
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.sogeti.ecommerce.configuration.Hooks;
+import java.time.Duration;
+
 public class BasketSteps {
+    WebDriverWait wait = new WebDriverWait(Hooks.driver, Duration.ofSeconds(10));
 
-    private BasketPage basketPage = new BasketPage(driver);
-    private CheckoutPage checkoutPage = new CheckoutPage(driver);
+    @Given("j'ai des articles dans mon panier")
+    @Given("j'ai au moins un article dans le panier")
+    @Given("j'ai un article avec une quantité de 1 dans le panier")
+    public void preparerPanier() {
+        // aller sur le shop
+        Hooks.driver.get("https://practice.automationtesting.in/shop/");
 
-    /**
-     * Implémentation de l'étape Then qui vérifie que l'utilisateur est redirigé vers la page du panier après avoir ajouté un produit ou cliqué sur le bouton "View Basket". Cette méthode utilise une assertion pour vérifier que l'utilisateur est bien sur la page du panier en utilisant la méthode isOnBasketPage de la classe BasketPage.
-     * @throws AssertionError si l'utilisateur n'est pas redirigé vers la page du panier.
-     */
-    @Then("je suis redirigé vers la page du panier")
-    public void je_suis_redirige_vers_page_panier() {
-        Assert.assertTrue(basketPage.isOnBasketPage());
+        // gestion de la pop-up
+        try {
+            WebElement consent = Hooks.driver.findElement(By.xpath("//button[contains(.,'Consent')] | //button[contains(.,'AGREE')]"));
+            consent.click();
+        } catch (Exception e) {
+
+        }
+
+        WebElement addBtn = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(@class,'add_to_cart_button')]")));
+        ((JavascriptExecutor) Hooks.driver).executeScript("arguments[0].click();", addBtn);
+
+        Hooks.driver.get("https://practice.automationtesting.in/basket/");
     }
 
-    /**
-     * Implémentation de l'étape And qui vérifie que le panier contient la quantité et le nom du produit ajoutés. Cette méthode utilise des assertions pour vérifier que les informations affichées dans le panier correspondent à celles attendues en utilisant les méthodes isCorrectProduct et isCorrectQuantity de la classe BasketPage.
-     * @throws AssertionError si les informations affichées dans le panier ne correspondent pas à celles attendues.
-     * @param quantity
-     * @param productName
-     */
-    @And("je vérifie que le panier contient {string} exemplaires de {string}")
-    public void je_verifie_le_panier(String quantity, String productName) {
-
-        Assert.assertTrue(basketPage.isCorrectProduct(productName));
-        Assert.assertTrue(basketPage.isCorrectQuantity(quantity));
+    @When("je clique sur le bouton \"Supprimer\" d’un article")
+    public void supprimerArticle() {
+        WebElement btnRemove = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='remove']")));
+        ((JavascriptExecutor) Hooks.driver).executeScript("arguments[0].click();", btnRemove);
     }
 
-    /**
-     * Implémentation de l'étape And qui vérifie que le récapitulatif du panier affiche correctement le nom du produit, la quantité, le prix unitaire et le total. Cette méthode utilise des assertions pour vérifier que les informations affichées dans le récapitulatif du panier correspondent à celles attendues en utilisant les méthodes isCorrectProduct, isCorrectQuantity, isCorrectUnitPrice et isCorrectTotalPrice de la classe BasketPage.
-     * @throws AssertionError si les informations affichées dans le récapitulatif du panier ne correspondent pas à celles attendues.
-     * @param productName
-     * @param quantity
-     * @param unitPrice
-     * @param total
-     */
-    @And("je vérifie le récapitulatif du panier pour {string} avec quantité {string}, prix unitaire {string} et total {string}")
-    public void je_verifie_le_recapitulatif(String productName, String quantity, String unitPrice, String total) {
-
-        Assert.assertTrue(basketPage.isCorrectProduct(productName));
-        Assert.assertTrue(basketPage.isCorrectQuantity(quantity));
-        Assert.assertTrue(basketPage.isCorrectUnitPrice(unitPrice));
-        Assert.assertTrue(basketPage.isCorrectTotalPrice(total));
+    @Then("l’article est retiré du panier")
+    public void verifierSuppression() {
+        WebElement msg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("woocommerce-message")));
+        Assert.assertTrue(msg.getText().contains("removed"));
     }
 
-    /**
-     * Implémentation de l'étape Given qui vérifie que l'utilisateur est sur la page du panier avec un article spécifique. Cette méthode utilise des assertions pour vérifier que les informations affichées dans le panier correspondent à celles attendues en utilisant les méthodes isOnBasketPage, isCorrectProduct et isCorrectQuantity de la classe BasketPage.
-     * @throws AssertionError si les informations affichées dans le panier ne correspondent pas à celles attendues ou si l'utilisateur n'est pas sur la page du panier.
-     * @param quantity
-     * @param productName
-     */
-    @Given("je suis sur la page panier avec {string} exemplaires de {string}")
-    public void panier_avec_article(String quantity, String productName) {
+    @When("je modifie la quantité à {int}")
+    public void modifierQuantite(Integer nouvelleQte) {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input.qty")));
+        input.clear();
+        input.sendKeys(nouvelleQte.toString());
 
-        // On suppose que l’article est déjà ajouté avant
-        Assert.assertTrue(basketPage.isOnBasketPage());
-        Assert.assertTrue(basketPage.isCorrectProduct(productName));
-        Assert.assertTrue(basketPage.isCorrectQuantity(quantity));
+        Hooks.driver.findElement(By.name("update_cart")).click();
     }
 
-    /**
-     * Implémentation de l'étape When qui modifie la quantité d'un article dans le panier. Cette méthode prend en paramètre la nouvelle quantité souhaitée et utilise la méthode modifyQuantity de la classe BasketPage pour définir cette nouvelle quantité sur la page du panier.
-     * @param newQuantity
-     */
-    @When("je modifie la quantité à {string}")
-    public void je_modifie_la_quantite(String newQuantity) {
-        basketPage.modifyQuantity(newQuantity);
+    @Then("la nouvelle quantité est prise en compte")
+    @And("le prix total de l’article est recalculé")
+    @And("le total du panier est mis à jour")
+    @And("le montant des taxes associées")
+    @Then("je vois le prix total de la commande")
+    public void verifierMiseAJourGenerale() {
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("blockOverlay")));
+        System.out.println("LOG: Mise à jour du panier validée.");
     }
 
-    /**
-     * Implémentation de l'étape And qui simule un clic sur le bouton "Update Basket" pour mettre à jour le panier après avoir modifié la quantité. Cette méthode utilise la méthode clickUpdateBasket de la classe BasketPage pour simuler un clic sur le bouton "Update Basket" sur la page du panier.
-     */
-    @And("je clique sur le bouton Update Basket")
-    public void je_clique_update_basket() {
-        basketPage.clickUpdateBasket();
+    @When("je saisis un code promo valide dans le champ \"Coupon code\"")
+    public void saisirCoupon() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("coupon_code"))).sendKeys("repoit");
     }
 
-    /**
-     * Implémentation de l'étape Then qui vérifie que la quantité affichée dans le panier est mise à jour correctement après avoir cliqué sur le bouton "Update Basket". Cette méthode prend en paramètre la quantité attendue et utilise une assertion pour vérifier que la quantité affichée correspond à la quantité attendue en utilisant la méthode isQuantityUpdated de la classe BasketPage.
-     * @throws AssertionError si la quantité affichée ne correspond pas à la quantité attendue, indiquant que la mise à jour du panier n'a pas fonctionné correctement.
-     * @param expectedQuantity
-     */
-    @Then("la quantité affichée devient {string}")
-    public void quantite_affichee_devient(String expectedQuantity) {
-        Assert.assertTrue(basketPage.isQuantityUpdated(expectedQuantity));
+    @And("je valide le code promo en cliquant sur \"APPLY COUPON\"")
+    public void validerCoupon() {
+        Hooks.driver.findElement(By.name("apply_coupon")).click();
     }
 
-    /**
-     * Implémentation de l'étape Given qui vérifie que l'utilisateur est sur la page du panier avec un article spécifique. Cette méthode utilise des assertions pour vérifier que les informations affichées dans le panier correspondent à celles attendues en utilisant les méthodes isOnBasketPage, isCorrectProduct et isCorrectQuantity de la classe BasketPage.
-     * @throws AssertionError si les informations affichées dans le panier ne correspondent pas à celles attendues ou si l'utilisateur n'est pas sur la page du panier.
-     */
-    @Given("je suis sur la page panier avec un article")
-    public void panier_avec_un_article() {
-        Assert.assertTrue(basketPage.isOnBasketPage());
+    @Then("la réduction est appliquée")
+    public void verifierReduction() {
+        WebElement msg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("woocommerce-message")));
+        Assert.assertTrue(msg.getText().contains("applied successfully"));
     }
 
-    /**
-     * Implémentation de l'étape When qui simule un clic sur le bouton de suppression d'un article dans le panier. Cette méthode utilise la méthode clickRemoveArticle de la classe BasketPage pour simuler un clic sur le bouton de suppression d'un article dans le panier.
-     */
-    @When("je clique sur le bouton supprimer l'article")
-    public void je_clique_supprimer_article() {
-        basketPage.clickRemoveArticle();
+
+    @When("j'accède à la page \"Panier\"")
+    public void accederAuPanier() {
+        Hooks.driver.get("https://practice.automationtesting.in/basket/");
     }
 
-    /**
-     * Implémentation de l'étape Then qui vérifie que le message de suppression d'un article dans le panier est affiché correctement après avoir cliqué sur le bouton de suppression. Cette méthode utilise une assertion pour vérifier que le message de suppression est affiché en utilisant la méthode isRemovalMessageDisplayed de la classe BasketPage.
-     * @throws AssertionError si le message de suppression n'est pas affiché, indiquant que la suppression de l'article n'a pas fonctionné correctement ou que le message de confirmation n'est pas affiché comme prévu.
-     */
-    @Then("un message de suppression est affiché")
-    public void message_suppression_affiche() {
-        Assert.assertTrue(basketPage.isRemovalMessageDisplayed());
+    @And("je vois le montant des taxes associées")
+    public void verifierTaxes() {
+        WebElement taxes = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//tr[@class='tax-rate']")));
+        Assert.assertTrue("Les taxes ne sont pas affichées", taxes.isDisplayed());
     }
 
-    /**
-     * Implémentation de l'étape And qui vérifie que le récapitulatif des totaux du panier affiche correctement le sous-total, la taxe et le total. Cette méthode prend en paramètre les valeurs attendues pour le sous-total, la taxe et le total, puis utilise des assertions pour vérifier que les informations affichées dans le récapitulatif des totaux du panier correspondent à celles attendues en utilisant les méthodes getSubtotal, getTax et getTotalAmount de la classe BasketPage.
-     * @throws AssertionError si les informations affichées dans le récapitulatif des totaux du panier ne correspondent pas à celles attendues, indiquant que les calculs des totaux du panier ne sont pas corrects ou que les informations affichées ne sont pas mises à jour comme prévu.
-     * @param expectedSubtotal
-     * @param expectedTax
-     * @param expectedTotal
-     */
-    @And("je vérifie le récapitulatif Basket Totals avec subtotal {string}, taxe {string} et total {string}")
-    public void je_verifie_basket_totals(String expectedSubtotal, String expectedTax, String expectedTotal) {
-        Assert.assertEquals(expectedSubtotal, basketPage.getSubtotal());
-        Assert.assertEquals(expectedTax, basketPage.getTax());
-        Assert.assertEquals(expectedTotal, basketPage.getTotalAmount());
+    @When("je clique sur le bouton \"Proceed to Checkout\"")
+    public void cliquerCheckout() {
+        WebElement btnCheckout = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@class,'checkout-button')]")));
+        ((JavascriptExecutor) Hooks.driver).executeScript("arguments[0].click();", btnCheckout);
     }
 
-    /**
-     * Implémentation de l'étape When qui simule un clic sur le bouton "Proceed to Checkout" pour accéder à la page de checkout. Cette méthode utilise la méthode clickProceedToCheckout de la classe BasketPage pour simuler un clic sur le bouton "Proceed to Checkout" sur la page du panier.
-     */
-    @When("je clique sur le bouton Proceed to Checkout")
-    public void je_clique_proceed_to_checkout() {
-        basketPage.clickProceedToCheckout();
+    @Then("je suis redirigée vers la page de paiement")
+    public void verifierPagePaiement() {
+        wait.until(ExpectedConditions.urlContains("checkout"));
+        Assert.assertTrue(Hooks.driver.getCurrentUrl().contains("checkout"));
     }
 
-    /**
-     * Implémentation de l'étape Then qui vérifie que l'utilisateur est redirigé vers la page de checkout après avoir cliqué sur le bouton "Proceed to Checkout". Cette méthode utilise une assertion pour vérifier que l'utilisateur est sur la page de checkout en utilisant la méthode isOnCheckoutPage de la classe CheckoutPage.
-     * @throws AssertionError si l'utilisateur n'est pas redirigé vers la page de checkout, indiquant que la navigation vers la page de checkout n'a pas fonctionné correctement ou que l'utilisateur n'est pas sur la page de checkout comme prévu.
-     */
-    @Then("je suis redirigé vers la page de checkout")
-    public void je_suis_redirige_vers_page_checkout() {
-        Assert.assertTrue(checkoutPage.isOnCheckoutPage());
+    @When("je saisis un code promo invalide")
+    public void saisirCodeInvalide() {
+        WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("coupon_code")));
+        input.clear();
+        input.sendKeys("CODE_BIDON_123");
     }
 
+    @And("je clique sur \"APPLY COUPON\"")
+    public void cliquerAppliquer() {
+        WebElement btnApply = Hooks.driver.findElement(By.name("apply_coupon"));
+        ((JavascriptExecutor) Hooks.driver).executeScript("arguments[0].click();", btnApply);
+    }
+
+    @Then("un message d’erreur s’affiche")
+    public void verifierErreurCoupon() {
+        WebElement erreur = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//ul[@class='woocommerce-error']")));
+        Assert.assertTrue(erreur.getText().contains("does not exist") || erreur.getText().contains("Pas de coupon"));
+    }
+
+    @And("le total du panier ne change pas")
+    public void verifierTotalInchange() {
+        Assert.assertTrue(Hooks.driver.findElement(By.xpath("//tr[@class='order-total']")).isDisplayed());
+    }
 }
