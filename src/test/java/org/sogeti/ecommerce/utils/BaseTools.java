@@ -51,4 +51,5 @@ public class BaseTools {
         e.sendKeys(Keys.chord(Keys.CONTROL, "a", Keys.DELETE));
         e.sendKeys(value);
     }
+
 }

@@ -31,6 +31,9 @@ public class ShopPage extends BasePage{
     @FindBy(xpath = "//i[contains(@class,'wpmenucart-icon-shopping-cart')]")
     private WebElement iconePanier;
 
+
+
+
     public boolean isAndroidBookDisplayed() {
         return androidBook.isDisplayed();
     }
