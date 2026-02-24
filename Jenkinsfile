@@ -41,7 +41,7 @@ pipeline {
 
                REM Utilisation de l'endpoint d'export standard (GET est souvent plus fiable pour les keys)
                curl -H "Authorization: Bearer %TOKEN%" ^
-                    "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-45" ^
+                    "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-44" ^
                     -o exported_features.zip
 
                for %%F in (exported_features.zip) do if %%~zF LSS 500 (
