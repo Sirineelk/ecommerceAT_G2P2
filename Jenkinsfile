@@ -2,85 +2,46 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
+        choice(name: 'BROWSER', choices: ['chrome', 'edge', 'firefox'])
+    }
+
+    environment {
+        XRAY_TOKEN = credentials('jenkins-xray-token')
+        XRAY_EXPORT_URL = 'https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-102'
+        XRAY_IMPORT_URL = 'https://xray.cloud.getxray.app/api/v2/import/execution/cucumber/multipart'
+        BROWSER = "${params.BROWSER}"
     }
 
     stages {
-        stage('Define Workspace path') {
+        stage('Xray Export') {
             steps {
-                script {
-                    env.WORKSPACE_PATH = "C:/Dev/jenkins/workspace/POEI_P2_G2/src/test/resources/features"
+                bat 'curl -H "Content-Type: application/json" -X GET -H "Authorization: Bearer %XRAY_TOKEN%" %XRAY_EXPORT_URL% -o features.zip'
+            }
+        }
+
+        stage('Clean Features') {
+            steps {
+                bat 'rmdir /S /Q src\\test\\resources\\features'
+                bat 'mkdir src\\test\\resources\\features'
+            }
+        }
+
+        stage('Unzip Features') {
+            steps {
+                bat 'powershell -Command Expand-Archive -Force features.zip src/test/resources/features'
+            }
+        }
+
+        stage('Clean & Test') {
+            steps {
+                bat 'mvn clean test'
+            }
+
+            post {
+                always {
+                    bat 'curl -H "Authorization: Bearer %XRAY_TOKEN%" -F "results=@target/cucumber.json;type=application/json" -F "info=@info.json;type=application/json" %XRAY_IMPORT_URL%'
                 }
             }
-        }
-        stage ('recup token'){
-        steps{
-            bat """
-                            @echo off
-                            curl -s -H "Content-Type: application/json" -X POST ^
-                                 --data "{\\"client_id\\":\\"AE8CFFEBED9D442D90AC19F872B22D79\\",\\"client_secret\\":\\"42a7a7d70520a256f83e069ca96c4eb3a05e59a41a1f2cd168f2c03efa181d25\\"}" ^
-                                 https://xray.cloud.getxray.app/api/v1/authenticate > raw_token.txt
-
-                            set /p RAW_TOKEN=<raw_token.txt
-                            set TOKEN=%RAW_TOKEN:"=%
-                            echo %TOKEN% > token.txt
-                            echo Token récupéré et nettoyé.
-                        """
-            }
-        }
-
-        stage('Get Features') {
-            steps {
-                bat """
-                    @echo off
-                    set /p TOKEN=<token.txt
-                    echo Export features from Xray...
-                    curl -H "Authorization: Bearer %TOKEN%" ^
-                         "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-72" ^
-                         -o exported_features.zip
-
-                    for %%F in (exported_features.zip) do if %%~zF LSS 500 (
-                        echo Erreur : Le fichier ZIP est invalide ou contient une erreur JSON.
-                        type exported_features.zip
-                        exit /b 1
-                    )
-                """
-
-                powershell """
-                    \$zip = "exported_features.zip"
-                    \$dest = "${env.WORKSPACE_PATH}"
-                    if (!(Test-Path \$dest)) { New-Item -ItemType Directory -Path \$dest | Out-Null }
-                    Expand-Archive -Path \$zip -DestinationPath \$dest -Force
-                """
-
-                bat "del exported_features.zip"
-            }
-        }
-
-        stage('Build & Test') {
-            steps {
-                bat "mvn clean test -Dselenium.browser=${params.SELENIUM_BROWSER}"
-            }
-        }
-    }
-
-    post {
-        always {
-            bat """
-                             curl -X POST ^
-                              -H "Content-Type: application/json" ^
-                              -H "Authorization: Bearer %TOKEN%" ^
-                              --data @target\\cucumber.json ^
-                              https://xray.cloud.getxray.app/api/v1/import/execution/cucumber
-                           """
-        }
-
-        success {
-            echo 'Tests exécutés avec succès :tada:'
-        }
-
-        failure {
-            echo 'Des tests ont échoué :x:'
         }
     }
 }

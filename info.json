@@ -1,0 +1,17 @@
+{
+"fields": {
+"project": {
+"key": "POEI25G2P2"
+},
+"summary": "TNR Sprint 6",
+"issuetype": {
+"name": "Test Execution"
+},
+"labels": [
+"TNR"
+]
+},
+"xrayFields": {
+"testPlanKey": "POEI25G2P2-102"
+}
+}
