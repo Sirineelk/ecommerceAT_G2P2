@@ -80,11 +80,11 @@ pipeline {
             bat '''
                             @echo off
                             set /p TOKEN=<token.txt
-                            if exist target\\cucumber.json (
+                            if exist target/cucumber.json (
                                 echo Import des resultats vers Xray...
                                 curl -H "Content-Type: application/json" -X POST ^
                                      -H "Authorization: Bearer %TOKEN%" ^
-                                     --data @"target\\cucumber.json" ^
+                                     --data @"target/cucumber.json" ^
                                      "https://xray.cloud.getxray.app/api/v2/import/execution/cucumber"
                             ) else (
                                 echo Erreur : cucumber.json introuvable !
