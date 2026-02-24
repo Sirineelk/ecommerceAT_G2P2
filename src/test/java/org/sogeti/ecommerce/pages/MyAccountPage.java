@@ -1,5 +1,7 @@
 package org.sogeti.ecommerce.pages;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -99,8 +101,9 @@ public class MyAccountPage extends BasePage {
         }
     }
 
-    public void logout(){
-        logoutLink.click();
+    public void logout() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", driver.findElement(By.xpath("//a[text()='Logout']")));
     }
 
     public boolean isLoginAndRegisterDisplayed(){
