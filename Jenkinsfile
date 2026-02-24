@@ -13,6 +13,21 @@ pipeline {
                 }
             }
         }
+        stage ('recup token'){
+        steps{
+            bat """
+                            @echo off
+                            curl -s -H "Content-Type: application/json" -X POST ^
+                                 --data "{\\"client_id\\":\\"AE8CFFEBED9D442D90AC19F872B22D79\\",\\"client_secret\\":\\"42a7a7d70520a256f83e069ca96c4eb3a05e59a41a1f2cd168f2c03efa181d25\\"}" ^
+                                 https://xray.cloud.getxray.app/api/v1/authenticate > raw_token.txt
+
+                            set /p RAW_TOKEN=<raw_token.txt
+                            set TOKEN=%RAW_TOKEN:"=%
+                            echo %TOKEN% > token.txt
+                            echo Token récupéré et nettoyé.
+                        """
+            }
+        }
 
         stage('Get Features') {
             steps {
@@ -51,18 +66,13 @@ pipeline {
 
     post {
         always {
-            echo 'Récupération du token Xray...'
             bat """
-                @echo off
-                curl -s -H "Content-Type: application/json" -X POST ^
-                     --data "{\\"client_id\\":\\"AE8CFFEBED9D442D90AC19F872B22D79\\",\\"client_secret\\":\\"42a7a7d70520a256f83e069ca96c4eb3a05e59a41a1f2cd168f2c03efa181d25\\"}" ^
-                     https://xray.cloud.getxray.app/api/v1/authenticate > raw_token.txt
-
-                set /p RAW_TOKEN=<raw_token.txt
-                set TOKEN=%RAW_TOKEN:"=%
-                echo %TOKEN% > token.txt
-                echo Token récupéré et nettoyé.
-            """
+                             curl -X POST ^
+                              -H "Content-Type: application/json" ^
+                              -H "Authorization: Bearer ${XRAY_TOKEN}" ^
+                              --data @target/cucumber.json ^
+                              https://xray.cloud.getxray.app/api/v1/import/execution/cucumber
+                           """
         }
 
         success {
