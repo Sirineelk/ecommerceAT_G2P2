@@ -41,9 +41,7 @@ public class MyAccountPage extends BasePage {
     @FindBy(xpath = "//input[@id='rememberme']")
     WebElement rememberMeCheckbox;
 
-    // Lien de déconnexion
-    @FindBy(xpath = "//a[text()='Logout']")
-    private WebElement logoutLink;
+
 
     @FindBy(xpath = "//a[contains(@href,'edit-account')]")
     private WebElement accountDetailsLink;
@@ -102,9 +100,19 @@ public class MyAccountPage extends BasePage {
     }
 
     public void logout() {
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();",
-                driver.findElement(By.xpath("//a[text()='Logout']")));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement logoutLink = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//a[contains(text(),'Logout')]")
+                )
+        );
+
+        try {
+            logoutLink.click();
+        } catch (Exception e) {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();", logoutLink);
+        }
     }
 
 
