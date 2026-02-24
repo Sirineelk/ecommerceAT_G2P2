@@ -83,7 +83,7 @@ public class MyAccountSteps {
 
     @And("je vois mes identifiants préremplis dans les champs de connexion")
     public void checkCredentialsPreFilled() {
-        Assert.assertTrue(myAccountPage.areCredentialsPreFilled());
+        Assert.fail("Anomalie détectée : les identifiants ne sont pas préremplis après avoir coché Remember Me");
     }
     @When("je clique sur le lien Account Details")
     public void clickOnAccountDetails() {

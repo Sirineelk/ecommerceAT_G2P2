@@ -50,15 +50,13 @@ public class ShopSteps {
 
     @When("je regarde le nombre d'articles dans le stock")
     public void je_regarde_le_nombre_d_articles_dans_le_stock() {
-        Assert.assertFalse("Anomalie : le nombre d'article n'est pas affiché",
-                shopPage.isStockIsDisplayed());
+        Assert.fail("Anomalie détectée : le nombre d'exemplaires n'est pas affiché");
     }
 
     @Then("je vois le bouton Read more pour cet article")
     public void je_vois_le_bouton_read_more() {
         //  Retour volontairement false (anomalie)
-        Assert.assertFalse("Anomalie : le bouton Read More n'apparaît pas",
-                shopPage.isReadMoreDisplayed());
+        Assert.fail("Anomalie détectée : le bouton Read More n'apparaît pas");
     }
 
     @Given ("Je suis sur la page {string}")
@@ -74,7 +72,6 @@ public class ShopSteps {
 
     @When ("je clique sur l'icone du panier")
     public void je_clique_sur_l_icone_du_panier() {
-
         shopPage.clickIconePanier();
     }
 

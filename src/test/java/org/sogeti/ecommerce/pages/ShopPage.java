@@ -44,14 +44,6 @@ public class ShopPage extends BasePage{
     }
 
 
-   public boolean isStockIsDisplayed(){
-        return false;
-   }
-    // Anomalie volontaire - non développée
-    public boolean isReadMoreDisplayed() {
-        return false;
-    }
-
     public void clickIconePanier() {
         handleCookieConsent();
         iconePanier.click();

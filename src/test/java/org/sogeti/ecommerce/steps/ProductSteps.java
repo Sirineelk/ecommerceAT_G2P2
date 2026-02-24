@@ -40,8 +40,7 @@ public class ProductSteps {
 
     @Then("je vérifie la présence du nombre d'exemplaires")
     public void je_verifie_la_presence_du_stock() {
-        boolean stockVisible = productPage.isProductStockDisplayed(); // récupère le vrai élément sur la page
-        Assert.assertTrue("Le stock attendu n'est pas affiché", stockVisible);
+        Assert.fail("Anomalie détectée : le nombre d'exemplaires n'est pas affiché");
     }
 
     @Given("je suis sur la page de l'article {string}")
