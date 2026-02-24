@@ -20,7 +20,6 @@ public class ShopPage extends BasePage{
         driver.get(url);
         handleCookieConsent();
     }
-    // Article Android Quick Start Guide
     @FindBy(xpath = "//h3[contains(text(),'Android Quick Start Guide')]")
     private WebElement androidBook;
 

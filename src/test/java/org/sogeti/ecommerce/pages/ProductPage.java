@@ -51,10 +51,6 @@ public class ProductPage extends BasePage {
 
 
 
-    // ========================
-    // METHODS
-    // ========================
-
     public boolean isProductImageDisplayed() {
         handleCookieConsent();
         return productImage.isDisplayed();
@@ -73,7 +69,7 @@ public class ProductPage extends BasePage {
             WebElement stockElement = driver.findElement(By.id("stock"));
             return stockElement.isDisplayed() && !stockElement.getText().isEmpty();
         } catch (NoSuchElementException e) {
-            return false; // échoue si l'élément n'est pas trouvé
+            return false;
         }
     }
 

@@ -1,5 +1,6 @@
 package org.sogeti.ecommerce.pages;
 
+import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -7,9 +8,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BasePage {
     protected WebDriver driver;
+    private static final Logger logger = LogManager.getLogger(BasePage.class);
     private By logoImg = By.cssSelector("#site-logo a img");
     private By logoLink = By.cssSelector("#site-logo a");
     private By cookieButton = By.cssSelector(".fc-cta-consent");
@@ -18,9 +22,9 @@ public class BasePage {
         List<WebElement> buttons = driver.findElements(cookieButton);
         if (!buttons.isEmpty()) {
             buttons.get(0).click();
-            System.out.println("Popup de consentement fermé !");
+            logger.info("Popup de consentement fermé !");
         } else {
-            System.out.println("Aucun popup de consentement trouvé.");
+            logger.info("Aucun popup de consentement trouvé.");
         }
     }
 
@@ -52,7 +56,7 @@ public class BasePage {
             consentButton.click();
             System.out.println("Popup de consentement fermé !");
         } catch (TimeoutException e) {
-            System.out.println("Aucun popup de consentement trouvé.");
+            logger.info("Aucun popup de consentement trouvé.");
         }
     }
 

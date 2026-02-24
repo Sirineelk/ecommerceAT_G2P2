@@ -55,7 +55,6 @@ public class ShopSteps {
 
     @Then("je vois le bouton Read more pour cet article")
     public void je_vois_le_bouton_read_more() {
-        //  Retour volontairement false (anomalie)
         Assert.fail("Anomalie détectée : le bouton Read More n'apparaît pas");
     }
 
@@ -140,8 +139,6 @@ public class ShopSteps {
     public void redirection_page_detail() {
         Assert.assertTrue(shopPage.isRedirectedToProductDetail());
     }
-
-
 
 
 }

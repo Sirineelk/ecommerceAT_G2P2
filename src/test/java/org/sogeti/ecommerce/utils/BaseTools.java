@@ -18,7 +18,6 @@ public class BaseTools {
     protected static final int TIME = 100;
 
 
-    // public pour que la class watcher et json_watcher puisse y acceder
     public File screenshotFile;
     private WebDriverWait wait;
 
