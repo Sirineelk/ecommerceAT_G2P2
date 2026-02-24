@@ -1,5 +1,6 @@
 Feature: Details d'un article
 
+
   @DetailsArticle
 Scenario: Vérifier la présentation complète d’un article
 Given je suis sur l'article "Android Quick Start Guide"

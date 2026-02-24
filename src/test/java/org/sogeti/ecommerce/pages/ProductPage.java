@@ -36,11 +36,6 @@ public class ProductPage extends BasePage {
     @FindBy(xpath = "//ins//span[@class='woocommerce-Price-amount amount']")
     private WebElement productPrice;
 
-    // Stock (nombre d'exemplaires disponibles)
-    @FindBy(xpath = "//p[@class='stock in-stock']")
-    private WebElement productStock;
-
-
     // Champ quantité
     @FindBy(xpath = "//div[@class='quantity']//input[@type='number']")
     private WebElement quantityInput;
@@ -77,7 +72,7 @@ public class ProductPage extends BasePage {
     }
 
     public boolean isProductStockDisplayed() {
-        return productStock.isDisplayed();
+        return false ; // Anomalie volontaire - non développée
     }
 
 
