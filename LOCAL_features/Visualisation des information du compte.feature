@@ -3,8 +3,8 @@ Feature: Visualisation des information du compte depuis la page My Account
   @AccountDetails
   Scenario: Accès aux informations du compte
     Given je suis sur la page My Account
-    When Je saisis un login "Teststartest@gmail.com"
-    And Je saisis mon mot de passe "Adminadmin1234."
+    When Je saisis un login "teststartestadmin@gmail.com"
+    And Je saisis mon mot de passe "Adminadmin123."
     And Je clique sur le bouton login
     Then je suis connecté et je vois le lien : DashboardOrders, Download, Adresses, Account Details, Logout
     When je clique sur le lien Account Details
