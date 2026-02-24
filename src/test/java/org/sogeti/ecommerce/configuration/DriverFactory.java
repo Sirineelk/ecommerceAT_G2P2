@@ -33,17 +33,20 @@ public class DriverFactory {
                         prefs.put("profile.password_manager_enabled", false);
                         prefs.put("profile.default_content_settings.popups", 0);
                         chromeOptions.addArguments("--incognito");
-                       // chromeOptions.addArguments("--headless=new"); // ou supprime si tu veux voir le navigateur
+                        // chromeOptions.addArguments("--headless=new"); // ou supprime si tu veux voir le navigateur
                         chromeOptions.setExperimentalOption("prefs", prefs);
-
-                        driver = new ChromeDriver(chromeOptions); // <-- Chrome en local
+                        driver = new RemoteWebDriver(
+                                new URL("http://admin:admin@172.16.15.139:4444/wd/hub"),
+                                chromeOptions
+                        );
+                        //driver = new ChromeDriver(chromeOptions); // <-- Chrome en local
                         break;
                     case "FIREFOX":
                         FirefoxOptions firefoxOptions = new FirefoxOptions();
                         firefoxOptions.addArguments("-private");
                      //URL du Selenium Grid
                         driver = new RemoteWebDriver(
-                                new URL("http://admin:admin@172.16.14.237:4444/wd/hub"),
+                                new URL("http://admin:admin@172.16.15.139:4444/wd/hub"),
                                 firefoxOptions
                         );
                         break;
@@ -52,7 +55,7 @@ public class DriverFactory {
                         EdgeOptions edgeOptions = new EdgeOptions();
                         // URL du Selenium Grid
                         driver = new RemoteWebDriver(
-                                new URL("http://admin:admin@172.16.14.237:4444/wd/hub"),
+                                new URL("http://admin:admin@172.16.15.139:4444/wd/hub"),
                                 edgeOptions
                         );
                         break;
