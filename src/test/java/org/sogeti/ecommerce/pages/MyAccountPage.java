@@ -103,7 +103,8 @@ public class MyAccountPage extends BasePage {
 
     public void logout() {
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();", driver.findElement(By.xpath("//a[text()='Logout']")));
+        js.executeScript("arguments[0].click();",
+                driver.findElement(By.xpath("//a[text()='Logout']")));
     }
 
     public boolean isLoginAndRegisterDisplayed(){
@@ -111,10 +112,6 @@ public class MyAccountPage extends BasePage {
         return true;
     }
 
-
-    public boolean areCredentialsPreFilled() {
-        return false;
-    }
 
     public void clickAccountDetails() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
