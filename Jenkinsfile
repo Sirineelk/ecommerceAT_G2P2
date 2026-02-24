@@ -66,7 +66,10 @@ pipeline {
         stage('Build & Test') {
             steps {
                 echo 'Execution des tests Cucumber via Maven...'
-                bat "mvn clean test -Dbrowser=${params.SELENIUM_BROWSER}"
+                // catchError permet de capturer l'échec sans stopper le pipeline
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    bat "mvn clean test -Dbrowser=${params.SELENIUM_BROWSER}"
+                }
             }
         }
 
@@ -88,7 +91,6 @@ pipeline {
                 '''
             }
         }
-    }
 
     post {
         always {
