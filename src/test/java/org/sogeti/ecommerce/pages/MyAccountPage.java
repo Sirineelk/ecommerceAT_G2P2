@@ -107,10 +107,14 @@ public class MyAccountPage extends BasePage {
                 driver.findElement(By.xpath("//a[text()='Logout']")));
     }
 
-    public boolean isLoginAndRegisterDisplayed(){
 
-        return true;
-    }
+        public boolean isLoginAndRegisterDisplayed(){
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            wait.until(ExpectedConditions.visibilityOf(usernameField));
+
+            return usernameField.isDisplayed()
+                    && passwordField.isDisplayed();
+        }
 
 
     public void clickAccountDetails() {

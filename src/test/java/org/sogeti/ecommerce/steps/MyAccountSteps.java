@@ -76,7 +76,7 @@ public class MyAccountSteps {
         myAccountPage.logout();
     }
 
-    @Then("je suis déconnecté et la page my-account affiche les pavés Login et Register")
+    @Then("je suis deconnecte et la page my-account affiche les pavés Login et Register")
     public void checkLogout() {
         Assert.assertTrue(myAccountPage.isLoginAndRegisterDisplayed());
     }
