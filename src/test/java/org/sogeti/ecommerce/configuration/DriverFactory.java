@@ -33,7 +33,7 @@ public class DriverFactory {
                         chromeOptions.addArguments("--incognito");
                         chromeOptions.setExperimentalOption("prefs", prefs);
                         driver = new RemoteWebDriver(
-                                new URL("http://admin:admin@172.16.15.139:4444/wd/hub"),
+                                new URL("http://admin:admin@10.188.46.132:4444/wd/hub"),
                                 chromeOptions
                         );
                         break;
@@ -41,7 +41,7 @@ public class DriverFactory {
                         FirefoxOptions firefoxOptions = new FirefoxOptions();
                         firefoxOptions.addArguments("-private");
                         driver = new RemoteWebDriver(
-                                new URL("http://admin:admin@172.16.15.139:4444/wd/hub"),
+                                new URL("http://admin:admin@10.188.46.132:4444/wd/hub"),
                                 firefoxOptions
                         );
                         break;
@@ -49,7 +49,7 @@ public class DriverFactory {
                     case "EDGE":
                         EdgeOptions edgeOptions = new EdgeOptions();
                         driver = new RemoteWebDriver(
-                                new URL("http://admin:admin@172.16.15.139:4444/wd/hub"),
+                                new URL("http://admin:admin@10.188.46.132:4444/wd/hub"),
                                 edgeOptions
                         );
                         break;
