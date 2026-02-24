@@ -70,30 +70,27 @@ pipeline {
             }
         }
 
-        stage('Upload Results to Xray') {
-            steps {
-                bat '''
-                @echo off
-                set /p TOKEN=<token.txt
-                if exist target\\cucumber.json (
-                    echo Import des resultats vers Xray...
-                    curl -H "Content-Type: application/json" -X POST ^
-                         -H "Authorization: Bearer %TOKEN%" ^
-                         --data @"target\\cucumber.json" ^
-                         "https://xray.cloud.getxray.app/api/v2/import/execution/cucumber"
-                ) else (
-                    echo Erreur : cucumber.json introuvable !
-                    exit /b 1
-                )
-                '''
-            }
-        }
     }
 
     post {
         always {
             archiveArtifacts artifacts: '*.zip', fingerprint: true
             deleteDir() // Nettoie l'espace de travail
+
+            bat '''
+                            @echo off
+                            set /p TOKEN=<token.txt
+                            if exist target\\cucumber.json (
+                                echo Import des resultats vers Xray...
+                                curl -H "Content-Type: application/json" -X POST ^
+                                     -H "Authorization: Bearer %TOKEN%" ^
+                                     --data @"target\\cucumber.json" ^
+                                     "https://xray.cloud.getxray.app/api/v2/import/execution/cucumber"
+                            ) else (
+                                echo Erreur : cucumber.json introuvable !
+                                exit /b 1
+                            )
+                            '''
         }
     }
 }
