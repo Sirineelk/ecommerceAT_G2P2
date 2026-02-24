@@ -3,7 +3,6 @@ pipeline {
 
     parameters {
         string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
-        string(name: 'XRAY_TEST_CASE', defaultValue: 'POEI25G2P2-72')
     }
 
     stages {
@@ -22,7 +21,7 @@ pipeline {
                     set /p TOKEN=<token.txt
                     echo Export features from Xray...
                     curl -H "Authorization: Bearer %TOKEN%" ^
-                         "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=${params.XRAY_TEST_CASE}" ^
+                         "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-72" ^
                          -o exported_features.zip
 
                     for %%F in (exported_features.zip) do if %%~zF LSS 500 (
