@@ -1,9 +1,6 @@
 package org.sogeti.ecommerce.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 
 public class ProductPage extends BasePage {
@@ -72,7 +69,12 @@ public class ProductPage extends BasePage {
     }
 
     public boolean isProductStockDisplayed() {
-        return false ; // Anomalie volontaire - non développée
+        try {
+            WebElement stockElement = driver.findElement(By.id("stock"));
+            return stockElement.isDisplayed() && !stockElement.getText().isEmpty();
+        } catch (NoSuchElementException e) {
+            return false; // échoue si l'élément n'est pas trouvé
+        }
     }
 
 
