@@ -86,5 +86,5 @@ pipeline
         {
             echo 'Des tests ont échoué :x:'
         }
-    }
+
 }
