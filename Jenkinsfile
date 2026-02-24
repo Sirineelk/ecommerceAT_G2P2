@@ -5,11 +5,10 @@ pipeline {
         string(name: 'SELENIUM_BROWSER', defaultValue: 'CHROME')
     }
 
-
     stages {
+
         stage('Checkout') {
             steps {
-                // On laisse Jenkins gérer le checkout SCM automatique
                 echo 'Utilisation du code source cloné par Jenkins'
             }
         }
@@ -32,41 +31,39 @@ pipeline {
             }
         }
 
-       stage('Export Features from Xray') {
-           steps {
-               bat '''
-               @echo off
-               set /p TOKEN=<token.txt
-               echo Export features from Xray...
+        stage('Export Features from Xray') {
+            steps {
+                bat '''
+                @echo off
+                set /p TOKEN=<token.txt
+                echo Export features from Xray...
+                curl -H "Authorization: Bearer %TOKEN%" ^
+                     "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-44" ^
+                     -o exported_features.zip
 
-               REM Utilisation de l'endpoint d'export standard (GET est souvent plus fiable pour les keys)
-               curl -H "Authorization: Bearer %TOKEN%" ^
-                    "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-44" ^
-                    -o exported_features.zip
+                for %%F in (exported_features.zip) do if %%~zF LSS 500 (
+                    echo Erreur : Le fichier ZIP est invalide ou contient une erreur JSON.
+                    type exported_features.zip
+                    exit /b 1
+                )
+                '''
 
-               for %%F in (exported_features.zip) do if %%~zF LSS 500 (
-                   echo Erreur : Le fichier ZIP est invalide ou contient une erreur JSON.
-                   type exported_features.zip
-                   exit /b 1
-               )
-               '''
-
-               powershell '''
-               $zip = "exported_features.zip"
-               $dest = "exported_features"
-               if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
-               Expand-Archive -Path $zip -DestinationPath $dest -Force
-               $target = "src/test/resources/features"
-               if (!(Test-Path $target)) { New-Item -ItemType Directory -Path $target | Out-Null }
-               Copy-Item "$dest\\*.feature" -Destination $target -Recurse -Force
-               '''
-           }
-       }
+                powershell '''
+                $zip = "exported_features.zip"
+                $dest = "exported_features"
+                if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
+                Expand-Archive -Path $zip -DestinationPath $dest -Force
+                $target = "src/test/resources/features"
+                if (!(Test-Path $target)) { New-Item -ItemType Directory -Path $target | Out-Null }
+                Copy-Item "$dest\\*.feature" -Destination $target -Recurse -Force
+                '''
+            }
+        }
 
         stage('Build & Test') {
             steps {
                 echo 'Execution des tests Cucumber via Maven...'
-                // catchError permet de capturer l'échec sans stopper le pipeline
+                // catchError permet de continuer le pipeline même si les tests échouent
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                     bat "mvn clean test -Dbrowser=${params.SELENIUM_BROWSER}"
                 }
@@ -91,12 +88,13 @@ pipeline {
                 '''
             }
         }
+    }
 
     post {
         always {
+            echo 'Archivage des artifacts et nettoyage de l’espace de travail'
             archiveArtifacts artifacts: '*.zip', fingerprint: true
-            deleteDir() // Nettoie l'espace de travail
+            deleteDir()
         }
     }
-}
 }
