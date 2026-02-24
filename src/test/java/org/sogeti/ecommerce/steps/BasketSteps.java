@@ -16,7 +16,7 @@ public class BasketSteps {
     private BasketPage basketPage = new BasketPage(driver);
     private CheckoutPage checkoutPage = new CheckoutPage(driver);
 
-    @Then("je suis redirigé vers la page du panier")
+    @Then("je suis redirigé vers la page du panier basket")
     public void je_suis_redirige_vers_page_panier() {
         Assert.assertTrue(basketPage.isOnBasketPage());
     }

@@ -7,7 +7,7 @@ Given je suis sur la page de l'article "Android Quick Start Guide"
   And j'indique le nombre d'exemplaire voulu "5"
   When je clique sur le bouton d'ajout au panier
   And je clique sur le bouton View Basket
-  Then je suis redirigé vers la page du panier
+  Then je suis redirigé vers la page du panier basket
   And je vérifie le récapitulatif du panier pour "Android Quick Start Guide" avec quantité "5", prix unitaire "450.00" et total "2250.00"
 
 
@@ -18,7 +18,7 @@ Given je suis sur la page de l'article "Android Quick Start Guide"
     And j'indique le nombre d'exemplaire voulu "5"
     When je clique sur le bouton d'ajout au panier
     And je clique sur le bouton View Basket
-    Then je suis redirigé vers la page du panier
+    Then je suis redirigé vers la page du panier basket
     Given je suis sur la page panier avec "5" exemplaires de "Android Quick Start Guide"
     When je modifie la quantité à "3"
     And je clique sur le bouton Update Basket
@@ -32,7 +32,7 @@ Given je suis sur la page de l'article "Android Quick Start Guide"
       And j'indique le nombre d'exemplaire voulu "1"
       When je clique sur le bouton d'ajout au panier
       And je clique sur le bouton View Basket
-      Then je suis redirigé vers la page du panier
+      Then je suis redirigé vers la page du panier basket
       Given je suis sur la page panier avec un article
       When je clique sur le bouton supprimer l'article
       Then un message de suppression est affiché
@@ -44,7 +44,7 @@ Given je suis sur la page de l'article "Android Quick Start Guide"
     And j'indique le nombre d'exemplaire voulu "5"
     When je clique sur le bouton d'ajout au panier
     And je clique sur le bouton View Basket
-    Then je suis redirigé vers la page du panier
+    Then je suis redirigé vers la page du panier basket
     Then je vérifie le récapitulatif Basket Totals avec subtotal "2250.00", taxe "45.00" et total "2295.00"
 
   @ProceedToCheckout
@@ -54,6 +54,6 @@ Given je suis sur la page de l'article "Android Quick Start Guide"
     And j'indique le nombre d'exemplaire voulu "5"
     When je clique sur le bouton d'ajout au panier
     And je clique sur le bouton View Basket
-    Then je suis redirigé vers la page du panier
+    Then je suis redirigé vers la page du panier basket
     When je clique sur le bouton Proceed to Checkout
     Then je suis redirigé vers la page de checkout

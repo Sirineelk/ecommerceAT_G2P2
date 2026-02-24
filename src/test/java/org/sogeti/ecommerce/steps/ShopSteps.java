@@ -14,7 +14,7 @@ import static org.sogeti.ecommerce.configuration.DriverFactory.driver;
 
 public class ShopSteps {
 
-  // selon ta config
+
   private ShopPage shopPage= new ShopPage(driver);
     private ConfigReader settings = new ConfigReader();
     @Given("Je suis sur la page Shop")
