@@ -38,7 +38,7 @@ pipeline {
                 set /p TOKEN=<token.txt
                 echo Export features from Xray...
                 curl -H "Authorization: Bearer %TOKEN%" ^
-                     "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-145" ^
+                     "https://xray.cloud.getxray.app/api/v2/export/cucumber?keys=POEI25G2P2-42" ^
                      -o exported_features.zip
 
                 for %%F in (exported_features.zip) do if %%~zF LSS 500 (
